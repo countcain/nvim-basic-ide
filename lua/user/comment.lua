@@ -4,6 +4,10 @@ if not status_ok then
 end
 
 comment.setup {
+  opleader = {
+    line = 'cl',
+    block = 'cb',
+  },
   pre_hook = function(ctx)
     local U = require "Comment.utils"
 

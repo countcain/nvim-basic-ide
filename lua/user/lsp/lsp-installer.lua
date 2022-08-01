@@ -12,6 +12,8 @@ local servers = {
   "bashls",
   "jsonls",
   "yamlls",
+  "gopls",
+  "golangci_lint_ls",
 }
 
 lsp_installer.setup()
@@ -19,6 +21,20 @@ lsp_installer.setup()
 local lspconfig_status_ok, lspconfig = pcall(require, "lspconfig")
 if not lspconfig_status_ok then
   return
+end
+
+local configs = require 'lspconfig/configs'
+
+if not configs.golangcilsp then
+  configs.golangcilsp = {
+    default_config = {
+      cmd = { 'golangci-lint-langserver' },
+      root_dir = lspconfig.util.root_pattern('.git', 'go.mod'),
+      init_options = {
+        command = { "golangci-lint", "run", "--enable-all", "--disable", "composites", "--out-format", "json" };
+      }
+    };
+  }
 end
 
 local opts = {}
@@ -37,6 +53,11 @@ for _, server in pairs(servers) do
   if server == "pyright" then
     local pyright_opts = require "user.lsp.settings.pyright"
     opts = vim.tbl_deep_extend("force", pyright_opts, opts)
+  end
+
+  if server == "gopls" then
+    local go_opts = require "user.lsp.settings.gopls"
+    opts = vim.tbl_deep_extend("force", go_opts, opts)
   end
 
   lspconfig[server].setup(opts)
