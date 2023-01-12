@@ -81,6 +81,7 @@ Control
 - i quick documentation
 - e view error description
 - p show parameter info
+- u go to next usage in the current file
 
 Cmd + Shift
 
